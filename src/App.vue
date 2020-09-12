@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <!-- <button @click="buttondata">123</button> -->
     <router-view />
     <main-tab-bar />
   </div>
