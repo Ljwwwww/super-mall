@@ -50,9 +50,10 @@ export default {
     text-align: center;
     height: 49px;
     font-size: 14px;
-    margin-top: 3px;
   }
+
   #tab-bar-item img {
+    margin-top: 3px;
     width: 24px;
     /* 去掉图片下面像素 */
     vertical-align: middle;

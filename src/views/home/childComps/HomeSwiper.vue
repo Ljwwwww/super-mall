@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home-swiper">
     <swiper>
       <swiper-item v-for="item in banners" :key="item.title">
         <a :href="item.link">
@@ -28,5 +28,7 @@ export default {
 </script>
 
 <style>
-
+  .home-swiper {
+    /* margin-top: -1%; */
+  }
 </style>
