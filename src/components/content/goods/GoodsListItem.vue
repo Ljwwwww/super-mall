@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item">
-    <img :src="goodsItem.show.img" alt="">
+    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -18,6 +18,15 @@ export default {
       default() {
         return {}
       }
+    }
+  },
+  methods: {
+    /**
+     * 每张图片加载完成调用此方
+     * 当每次图片加载完成调用事件总线获取 scroll对象的refresh()方法从新计算滚动高度
+     */
+    imageLoad() {
+      this.$bus.$emit('itemImageLoad')
     }
   }
 }

@@ -11,7 +11,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
 
-    <!-- 组件不能直接监听
+    <!-- 组件不能直接监听方法
       -- 得添加.native修饰符才能实现组件监听
       -- 在我们需要监听一个组件的原生事件时, 必须给对应的事件加上.native修饰符, 才能进行监听.
      -->
@@ -30,6 +30,8 @@ import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import scroll from 'components/commom/scroll/scroll'
 import backTop from 'components/content/backTop/backTop'
+
+import {debounce} from 'common/utils'
 
 import {getHomeMultidata, getHomeGoods} from 'network/homes/home'
 
@@ -73,25 +75,22 @@ export default {
     this.getHomeGoods('new')
 
     this.getHomeGoods('sell')
-   
   },
   methods: {
     /**
      * 事件监听相关方法
      */
+    // 获取选项栏点击来获取加载对于货品
     tabClick(index) {
       switch (index) {
         case 0:
           this.currentType = 'pop'
-          this.staple()
           break;
         case 1: 
           this.currentType = 'new' 
-          this.staple()   
           break
         case 2: 
           this.currentType = 'sell'
-          this.staple()
           break
         default:
           break;
@@ -115,14 +114,6 @@ export default {
       console.log('加载')
       this.getHomeGoods(this.currentType)
     },
-    // 延时重新计算可滚动元素高度
-    staple() {
-      setTimeout(() => {
-        this.$refs.scroll.scroll.refresh()
-      }, 200);
-    },
-
-
 
     /**
      * 网络请求相关方法
@@ -141,11 +132,19 @@ export default {
 
         // 上拉加载更多次
         this.$refs.scroll.finishPullUp()
-        // 重新计算元素高度
-        this.staple()
+        // 每次网络请求后获取新数据 重新计算元素高度
+        // this.staple()
       })
     }
+  },
+  mounted() {
+    const refresh = debounce(this.$refs.scroll.refresh,200)
+    // 发送一个事件总线
+    this.$bus.$on('itemImageLoad', () => {
+      refresh()
+    })
   }
+
 }
 </script>
 

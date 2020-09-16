@@ -4,6 +4,11 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 
+Vue.config.productionTip = false
+
+// 创建事件总线
+Vue.prototype.$bus = new Vue()
+
 new Vue({
   router,
   store,

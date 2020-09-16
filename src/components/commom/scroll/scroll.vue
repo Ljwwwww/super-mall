@@ -47,7 +47,6 @@ export default {
     this.scroll.on('pullingUp', () => {
       this.$emit('pullingUp')
     })
-
   },
   methods: {
     /**
@@ -60,6 +59,11 @@ export default {
 
     finishPullUp() {
       this.scroll.finishPullUp()
+    },
+
+    refresh() {
+      // 判断scroll对象是否初始化完成 预防其他组件加载完成调用refresh方法的时候是个null
+      this.scroll && this.scroll.refresh()
     }
   }
 }
