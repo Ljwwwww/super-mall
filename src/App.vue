@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view class="router-view" />
+    <!-- exclude排除不需要缓存 -->
+    <keep-alive exclude="Detail">
+      <router-view class="router-view" />
+    </keep-alive>
     <main-tab-bar class="tab-bar" />
   </div>
 </template>
@@ -12,11 +15,7 @@ export default {
   name: 'App',
   components: {
     MainTabBar
-  },methods: {
-    buttondata() {
-      this.$store.dispatch('GetData')
-    }
-  }
+  },
 }
 </script>
 

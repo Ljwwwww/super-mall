@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <img :src="goodsItem.show.img" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
@@ -27,12 +27,24 @@ export default {
      */
     imageLoad() {
       this.$bus.$emit('itemImageLoad')
+    },
+
+    /**
+     * 商品页面跳转事件
+     * 利用query跳转页面并且携带参数
+     */
+    itemClick() {
+      const iid = this.goodsItem.iid
+      this.$router.push({
+        path: '/detail',
+        query: {iid}
+      })
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
   .goods-item {
     padding-bottom: 36px;
     position: relative;

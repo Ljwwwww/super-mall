@@ -38,15 +38,19 @@ export default {
     })
     
     // 监听获取滚动事件
-    this.scroll.on('scroll', (position) => {
-      // 将监听的x, y位置传到父组件
-      this.$emit('scroll',position)
-    })
+    if (this.probeType == 2 || this.probeType == 3) {
+      this.scroll.on('scroll', (position) => {
+        // 将监听的x, y位置传到父组件
+        this.$emit('scroll',position)
+      })
+    }
     
     // 监听上拉事件
-    this.scroll.on('pullingUp', () => {
-      this.$emit('pullingUp')
-    })
+    if (this.pullUpLoad) {
+      this.scroll.on('pullingUp', () => {
+        this.$emit('pullingUp')
+      })
+    }
   },
   methods: {
     /**

@@ -1,13 +1,18 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <tab-control :titles="['流行', '新款', '精选']" @tabClick='tabClick' ref="tabcontrol2" class="tabcontrolNv" v-show="isTabFixesd" />
 
     <!-- 绑定ref获取组件对象 -->
     <scroll class="content" ref="scroll" :probe-type='3' :pull-up-load='true' @scroll="contentScroll" @pullingUp='loadMore'>
-      <home-swiper :banners= 'banners'></home-swiper>
+      <!-- 
+        -- .once修饰符
+        -- 绑定once的监听器只会触发一次，在第一次触发后该监听器会被remove掉
+       -->
+      <home-swiper :banners= 'banners' @homeSwiperImage.once='homeSwiperImage' />
       <home-recommend-view :recommends= 'recommends' />
       <feature-view />
-      <tab-control class="tab-control" :titles="['流行', '新款', '精选']" @tabClick='tabClick' />
+      <tab-control :titles="['流行', '新款', '精选']" @tabClick='tabClick' ref="tabcontrol1" />
       <goods-list :goods="showGoods" />
     </scroll>
 
@@ -58,6 +63,8 @@ export default {
       },
       currentType: 'pop',
       positionY: false,
+      tabOffsetTop: 0,
+      isTabFixesd: false,
     }
   },
   computed: {
@@ -95,6 +102,8 @@ export default {
         default:
           break;
       }
+      this.$refs.tabcontrol2.currentIndex = index
+      this.$refs.tabcontrol1.currentIndex = index
     },
     // 获取better-scroll实例对象
     backClick() {
@@ -106,13 +115,25 @@ export default {
     },
     // 获取scroll实时监听的x, y
     contentScroll(position) {
-      // 获取y的位置判断是否大于1000来显示组件
+      //1. 判断BackTop是否显示
       this.positionY = ((-position.y) > 1000) ? true : false
+
+      //2. 决定tabCOntrol是否吸顶(position: fixed)
+      // 当达到需要吸顶的时候显示隐藏的tab-control
+      this.isTabFixesd = ((-position.y) > this.tabOffsetTop) ? true : false
     },
     // 上拉加载更多数据
     loadMore() {
       console.log('加载')
       this.getHomeGoods(this.currentType)
+    },
+    /**
+     * 获取tab-control的offsettop元素高度
+     * 所有组件都有一个$el属性: 用于获取组件中的元素
+     * 通过子组件的图片加载完成在调用此方法, 再通过.once修饰符优化性能多次发送监听一次
+     */
+    homeSwiperImage() {
+      this.tabOffsetTop = this.$refs.tabcontrol1.$el.offsetTop
     },
 
     /**
@@ -132,12 +153,11 @@ export default {
 
         // 上拉加载更多次
         this.$refs.scroll.finishPullUp()
-        // 每次网络请求后获取新数据 重新计算元素高度
-        // this.staple()
       })
     }
   },
   mounted() {
+    //1. 图片加载完成事件监听
     const refresh = debounce(this.$refs.scroll.refresh,200)
     // 发送一个事件总线
     this.$bus.$on('itemImageLoad', () => {
@@ -150,7 +170,6 @@ export default {
 
 <style scoped>
   #home {
-    /* padding-top: 10%; */
     height: 100vh;
     position: relative;
   }
@@ -166,18 +185,17 @@ export default {
     z-index: 9;
   }
 
-  .tab-control {
-    /* 给选项栏设置下拉固定 */
-    position: sticky;
-    top: 0px;
-    z-index: 9;
-  }
-
   .content {
     position: absolute;
     top: 40px;
     bottom: 49px;
     left: 0;
     right: 0;
+  } 
+
+  .tabcontrolNv {
+    position: relative;
+    z-index: 9;
+    top: 40px;
   }
 </style> 
