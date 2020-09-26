@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" alt="" @load="imageLoad">
+    <img :src="showImage" alt="" @load="imageLoad">
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -24,9 +24,14 @@ export default {
     /**
      * 每张图片加载完成调用此方
      * 当每次图片加载完成调用事件总线获取 scroll对象的refresh()方法从新计算滚动高度
+     * 根据路由路径判断刷新
      */
     imageLoad() {
-      this.$bus.$emit('itemImageLoad')
+      if (this.$route.path.indexOf('/home') != -1) {
+        this.$bus.$emit('homeitemImageLoad')
+      }else if(this.$route.path.indexOf('/detail') != -1) {
+        this.$bus.$emit('detailitemImageLoad')
+      }
     },
 
     /**
@@ -39,6 +44,11 @@ export default {
         path: '/detail',
         query: {iid}
       })
+    }
+  },
+  computed: {
+    showImage() {
+      return this.goodsItem.image || this.goodsItem.show.img
     }
   }
 }

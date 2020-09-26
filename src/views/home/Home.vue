@@ -34,9 +34,9 @@ import NavBar from 'components/commom/navigationbar/NavBar'
 import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import scroll from 'components/commom/scroll/scroll'
-import backTop from 'components/content/backTop/backTop'
 
 import {debounce} from 'common/utils'
+import {BackTopMixin} from 'common/mixin'
 
 import {getHomeMultidata, getHomeGoods} from 'network/homes/home'
 
@@ -50,8 +50,9 @@ export default {
     TabControl,
     GoodsList,
     scroll,
-    backTop
   },
+  // 将返回顶部的代码混入封装
+  mixins: [BackTopMixin],
   data () {
     return {
       banners: [],
@@ -62,7 +63,6 @@ export default {
         'sell': {page: 0, list: []}
       },
       currentType: 'pop',
-      positionY: false,
       tabOffsetTop: 0,
       isTabFixesd: false,
     }
@@ -105,18 +105,10 @@ export default {
       this.$refs.tabcontrol2.currentIndex = index
       this.$refs.tabcontrol1.currentIndex = index
     },
-    // 获取better-scroll实例对象
-    backClick() {
-      /**
-       * 获取绑定ref的scroll组件对象
-       * 调用组件对象中已经封装好的方法
-       */
-      this.$refs.scroll.scrollTo(0, 0)
-    },
     // 获取scroll实时监听的x, y
     contentScroll(position) {
       //1. 判断BackTop是否显示
-      this.positionY = ((-position.y) > 1000) ? true : false
+      this.listenShoBackTop(position)
 
       //2. 决定tabCOntrol是否吸顶(position: fixed)
       // 当达到需要吸顶的时候显示隐藏的tab-control
@@ -124,7 +116,6 @@ export default {
     },
     // 上拉加载更多数据
     loadMore() {
-      console.log('加载')
       this.getHomeGoods(this.currentType)
     },
     /**
@@ -160,7 +151,7 @@ export default {
     //1. 图片加载完成事件监听
     const refresh = debounce(this.$refs.scroll.refresh,200)
     // 发送一个事件总线
-    this.$bus.$on('itemImageLoad', () => {
+    this.$bus.$on('homeitemImageLoad', () => {
       refresh()
     })
   }

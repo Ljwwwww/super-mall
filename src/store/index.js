@@ -9,8 +9,7 @@ import getters from './getters'
 vue.use(vuex)
 
 const state = {
-  data: [1,2,3],
-  pic: '123'
+  cartList: []
 }
 
 // 2.到处创建对象

@@ -33,8 +33,8 @@ export default {
     this.scroll = new BScrool(this.$refs.wrapper, {
       probeType: this.probeType,  //  设置监听滚动, 动态设置是否实时监听
       pullUpLoad: this.pullUpLoad,  //  上拉加载开启, 动态设置是否需要上拉加载
-      click: true,  //  在scroll组件启用click事件
-      mouseWheel: true,  //开启鼠标滚轮
+      click: true,  // 在scroll组件启用click事件
+      mouseWheel: true,  // 开启鼠标滚轮
     })
     
     // 监听获取滚动事件

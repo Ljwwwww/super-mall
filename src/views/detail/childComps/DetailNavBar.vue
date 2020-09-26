@@ -4,7 +4,7 @@
         <img src="~assets/img/common/back.svg" alt="">
       </div>
       <div slot="center" class="titles">
-        <div v-for="(item, index) in titles" :key="index" class="titles-item" :class="{avtic: index === currentIndex}" @click="detailClick(index)">{{ item }}</div>
+        <div v-for="(item, index) in titles" :key="index" class="titles-item" :class="{avtic: index == currentIndex}" @click="detailClick(index)">{{ item }}</div>
       </div>
     </nav-bar>
 </template>
@@ -38,10 +38,11 @@
     methods: {
       detailClick(index) {
         this.currentIndex = index
+        this.$emit('detailClick', index)
       },
       backClick() {
         this.$router.back()
-      }
+      },
     },
     components: {
       NavBar,
